@@ -16,7 +16,7 @@ bootstrap CSS::Minifier::XS $VERSION;
 
 =head1 NAME
 
-CSS::Minifier::XS - XS rewrite of CSS::Minifier
+CSS::Minifier::XS - XS based CSS minifier
 
 =head1 SYNOPSIS
 

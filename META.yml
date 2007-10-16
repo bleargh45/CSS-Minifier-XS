@@ -3,7 +3,7 @@ name: CSS-Minifier-XS
 version: 0.01_01
 author:
   - Graham TerMarsch (cpan@howlingfrog.com)
-abstract: XS rewrite of CSS::Minifier
+abstract: XS based CSS minifier
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
