@@ -1,5 +1,6 @@
 package CSS::Minifier::XS;
 
+use 5.006;
 use strict;
 use warnings;
 
