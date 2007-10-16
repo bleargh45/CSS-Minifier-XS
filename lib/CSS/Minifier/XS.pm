@@ -99,7 +99,7 @@ Comments that either (a) are needed to implement the "Mac/IE Comment Hack", or
 that (b) contain the word "copyright" in them are preserved.  B<All> other
 comments are removed.
 
-=items Symbols/Sigils
+=item Symbols/Sigils
 
 Semi-colons that are immediately followed by a closing brace (e.g. ";}") are
 removed; semi-colons are needed to separate multiple declarations, but aren't
