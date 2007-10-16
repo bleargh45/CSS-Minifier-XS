@@ -1,0 +1,19 @@
+---
+name: CSS-Minifier-XS
+version: 0.01_01
+author:
+  - Graham TerMarsch (cpan@howlingfrog.com)
+abstract: XS rewrite of CSS::Minifier
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  Test::More: 0
+provides:
+  CSS::Minifier::XS:
+    file: lib/CSS/Minifier/XS.pm
+    version: 0.01_01
+generated_by: Module::Build version 0.2805
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
