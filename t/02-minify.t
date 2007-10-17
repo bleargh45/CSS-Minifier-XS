@@ -2,9 +2,7 @@ use strict;
 use warnings;
 use IO::File;
 use Test::More;
-BEGIN {
-    use_ok('CSS::Minifier::XS', qw(minify));
-};
+use CSS::Minifier::XS qw(minify);
 
 ###############################################################################
 # figure out how many CSS files we're going to run through for testing
