@@ -18,6 +18,8 @@ t/css/comments-mac-ie-hack.css
 t/css/comments-mac-ie-hack.min
 t/css/leading-whitespace.css
 t/css/leading-whitespace.min
+t/css/retain-whitespace-after-close-parenthesis.css
+t/css/retain-whitespace-after-close-parenthesis.min
 t/css/styles.css
 t/css/styles.min
 t/css/trailing-semicolon.css

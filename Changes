@@ -1,5 +1,9 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.01_06     Wed Oct 31 20:39 PDT 2007
+    - retain whitespace after ")" characters; MSIE needs the whitespace, even
+      though the W3 validator considers the results valid CSS.
+
 0.01_05     Sat Oct 20 22:52 PDT 2007
     - don't use "strcasestr()"; not available on Solaris
 
