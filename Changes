@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.01        Mon May  5 15:15 PDT 2008
+    - no changes from 0.01_06, but is non-devel
+
 0.01_06     Wed Oct 31 20:39 PDT 2007
     - retain whitespace after ")" characters; MSIE needs the whitespace, even
       though the W3 validator considers the results valid CSS.
