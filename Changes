@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.02        Tue May  6 00:16 PDT 2008
+    - rebuild packages; EU::MM borked my META.yml
+
 0.01        Mon May  5 15:15 PDT 2008
     - no changes from 0.01_06, but is non-devel
 
