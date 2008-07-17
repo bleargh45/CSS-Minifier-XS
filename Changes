@@ -1,5 +1,10 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.03        Wed Jul 16 23:22 PDT 2008
+    - RT #36557: Nasty segfault on minifying comment-only css input.
+      Turned out to be *any* input that minified to "nothing" caused the
+      segfault, and only in certain Perl versions.
+
 0.02        Tue May  6 00:16 PDT 2008
     - rebuild packages; EU::MM borked my META.yml
 

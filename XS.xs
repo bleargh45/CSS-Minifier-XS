@@ -565,10 +565,14 @@ minify(string)
     SV* string
     INIT:
         char* buffer = NULL;
+        RETVAL = &PL_sv_undef;
     CODE:
         /* minify the CSS */
         buffer = CssMinify( SvPVX(string) );
-        RETVAL = newSVpv(buffer, 0);
-        free( buffer );
+        /* hand back the minified CSS (if we had any) */
+        if (buffer != NULL) {
+            RETVAL = newSVpv(buffer, 0);
+            free( buffer );
+        }
     OUTPUT:
         RETVAL
