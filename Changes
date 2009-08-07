@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.04        Thu Aug  6 22:03 PDT 2009
+    - fix invalid "L<text|scheme:...>" POD sequence
+
 0.03        Wed Jul 16 23:22 PDT 2008
     - RT #36557: Nasty segfault on minifying comment-only css input.
       Turned out to be *any* input that minified to "nothing" caused the

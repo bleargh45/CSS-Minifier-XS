@@ -9,7 +9,7 @@ require DynaLoader;
 our @ISA = qw(Exporter DynaLoader);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 bootstrap CSS::Minifier::XS $VERSION;
 
@@ -124,8 +124,8 @@ Graham TerMarsch (cpan@howlingfrog.com)
 
 =head1 REPORTING BUGS
 
-Please report bugs via
-L<rt.cpan.org|http://rt.cpan.org/Dist/Display.html?Queue=CSS::Minifier::XS>,
+Please report bugs via RT
+(L<http://rt.cpan.org/Dist/Display.html?Queue=CSS::Minifier::XS>),
 and be sure to include the CSS that you're having troubles minifying.
 
 =head1 COPYRIGHT
