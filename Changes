@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.05        Fri Apr 23 22:29 PDT 2010
+    - Switch to Git
+
 0.04        Thu Aug  6 22:03 PDT 2009
     - fix invalid "L<text|scheme:...>" POD sequence
 
