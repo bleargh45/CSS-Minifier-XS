@@ -167,7 +167,8 @@ int nodeEndsWith(Node* node, const char* string) {
  */
 /* allocates a new node */
 Node* CssAllocNode() {
-    Node* node = malloc(sizeof(Node));
+    Node* node;
+    Newxz(node, 1, Node);
     node->prev = NULL;
     node->next = NULL;
     node->contents = NULL;
@@ -180,8 +181,8 @@ Node* CssAllocNode() {
 /* frees the memory used by a node */
 void CssFreeNode(Node* node) {
     if (node->contents)
-        free(node->contents);
-    free(node);
+        Safefree(node->contents);
+    Safefree(node);
 }
 void CssFreeNodeList(Node* head) {
     while (head) {
@@ -194,7 +195,7 @@ void CssFreeNodeList(Node* head) {
 /* clears the contents of a node */
 void CssClearNodeContents(Node* node) {
     if (node->contents)
-        free(node->contents);
+        Safefree(node->contents);
     node->contents = NULL;
     node->length = 0;
 }
@@ -204,8 +205,7 @@ void CssSetNodeContents(Node* node, const char* string, size_t len) {
     CssClearNodeContents(node);
     node->length = len;
     /* allocate string, fill with NULLs, and copy */
-    node->contents = malloc( sizeof(char) * (len+1) );
-    memset( node->contents, 0, len );
+    Newxz(node->contents, (len+1), char);
     strncpy( node->contents, string, len );
 }
 
@@ -537,7 +537,8 @@ char* CssMinify(const char* string) {
         /* allocate the result buffer to the same size as the original CSS; in
          * a worst case scenario that's how much memory we'll need for it.
          */
-        ptr = results = malloc( sizeof(char) * (strlen(string)+1) );
+        Newxz(results, (strlen(string)+1), char);
+        ptr = results;
         /* copy node contents into result buffer */
         curr = head;
         while (curr) {
@@ -571,7 +572,7 @@ minify(string)
         /* hand back the minified CSS (if we had any) */
         if (buffer != NULL) {
             RETVAL = newSVpv(buffer, 0);
-            free( buffer );
+            Safefree( buffer );
         }
     OUTPUT:
         RETVAL
