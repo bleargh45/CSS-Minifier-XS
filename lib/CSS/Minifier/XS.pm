@@ -130,7 +130,7 @@ and be sure to include the CSS that you're having troubles minifying.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2007, Graham TerMarsch.  All Rights Reserved.
+Copyright (C) 2007-2010, Graham TerMarsch.  All Rights Reserved.
 
 This is free software; you can redistribute it and/or modify it under the same
 license as Perl itself.
