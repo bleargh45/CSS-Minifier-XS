@@ -1,5 +1,9 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
+0.06        Wed Jul 21 20:44 PDT 2010
+    - RT #59549; '(' should retain leading WS, as needed for @media queries.
+      Thanks to Mike Cardwell.
+
 0.05        Fri Apr 23 22:29 PDT 2010
     - Switch to Git
 
