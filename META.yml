@@ -1,6 +1,6 @@
 ---
 name: CSS-Minifier-XS
-version: 0.07
+version: 0.08
 author:
   - Graham TerMarsch (cpan@howlingfrog.com)
 abstract: XS based CSS minifier
@@ -10,13 +10,13 @@ resources:
 build_requires:
   Test::More: 0
 requires:
-  perl: 5.006
+  perl: v5.8.8
 configure_requires:
   Module::Build: 0.35
 provides:
   CSS::Minifier::XS:
     file: lib/CSS/Minifier/XS.pm
-    version: 0.07
+    version: 0.08
 generated_by: Module::Build version 0.35
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html

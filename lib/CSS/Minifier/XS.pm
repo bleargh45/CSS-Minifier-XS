@@ -1,6 +1,6 @@
 package CSS::Minifier::XS;
 
-use 5.006;
+use 5.8.8;
 use strict;
 use warnings;
 
@@ -9,7 +9,7 @@ require DynaLoader;
 our @ISA = qw(Exporter DynaLoader);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 bootstrap CSS::Minifier::XS $VERSION;
 
