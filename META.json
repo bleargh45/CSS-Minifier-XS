@@ -34,7 +34,7 @@
    "provides" : {
       "CSS::Minifier::XS" : {
          "file" : "lib/CSS/Minifier/XS.pm",
-         "version" : "0.08"
+         "version" : "0.09"
       }
    },
    "release_status" : "stable",
@@ -43,5 +43,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.08"
+   "version" : "0.09"
 }
