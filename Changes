@@ -1,6 +1,6 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
-0.09        ???
+0.09        Wed Oct 31 13:00 PDT 2013
     - RT #85350; retain WS around "+" and "-" operators, so that we don't break
       the "calc()" function by accident.
       Thanks to Philipp Soehnlein
