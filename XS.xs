@@ -169,7 +169,7 @@ int nodeEndsWith(Node* node, const char* string) {
 /* allocates a new node */
 Node* CssAllocNode() {
     Node* node;
-    Newxz(node, 1, Node);
+    Newz(0, node, 1, Node);
     node->prev = NULL;
     node->next = NULL;
     node->contents = NULL;
@@ -206,7 +206,7 @@ void CssSetNodeContents(Node* node, const char* string, size_t len) {
     CssClearNodeContents(node);
     node->length = len;
     /* allocate string, fill with NULLs, and copy */
-    Newxz(node->contents, (len+1), char);
+    Newz(0, node->contents, (len+1), char);
     strncpy( node->contents, string, len );
 }
 
@@ -587,7 +587,7 @@ char* CssMinify(const char* string) {
         /* allocate the result buffer to the same size as the original CSS; in
          * a worst case scenario that's how much memory we'll need for it.
          */
-        Newxz(results, (strlen(string)+1), char);
+        Newz(0, results, (strlen(string)+1), char);
         ptr = results;
         /* copy node contents into result buffer */
         curr = head;

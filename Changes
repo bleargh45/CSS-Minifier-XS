@@ -5,6 +5,7 @@ Revision history for Perl extension CSS::Minifier::XS.
       the "calc()" function by accident.
     - RT #60239; remove WS around ">" and "~" selector combinators
     - RT #60238; remove units on zero values (e.g. "0px" -> "0")
+    - RT #85896 and #79792; allow builds on Perls older than 5.8.8
 
 0.08        Tue Nov  2 22:25 PDT 2010
     - Bump Perl requirement to 5.8.8; oldest release with Newxz()

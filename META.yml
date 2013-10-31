@@ -18,8 +18,6 @@ provides:
   CSS::Minifier::XS:
     file: lib/CSS/Minifier/XS.pm
     version: 0.09
-requires:
-  perl: v5.8.8
 resources:
   license: http://dev.perl.org/licenses/
 version: 0.09

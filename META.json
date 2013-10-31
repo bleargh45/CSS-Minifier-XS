@@ -24,11 +24,6 @@
          "requires" : {
             "Module::Build" : "0.40"
          }
-      },
-      "runtime" : {
-         "requires" : {
-            "perl" : "v5.8.8"
-         }
       }
    },
    "provides" : {

@@ -10,9 +10,6 @@ Module::Build->new(
     'xs_files'          => {
         'XS.xs' => 'lib/CSS/Minifier/XS.xs',
         },
-    'requires'          => {
-        'perl'                  => '5.8.8',
-        },
     'build_requires'    => {
         'Test::More'            => 0,
         },
