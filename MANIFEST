@@ -16,6 +16,8 @@ t/pod.t
 t/pod-coverage.t
 t/css/calc-operators.css
 t/css/calc-operators.min
+t/css/combinators.css
+t/css/combinators.min
 t/css/comments.css
 t/css/comments.min
 t/css/comments-mac-ie-hack.css

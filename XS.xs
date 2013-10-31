@@ -42,6 +42,8 @@ int charIsInfix(char ch) {
     if (ch == ';')  return 1;
     if (ch == ':')  return 1;
     if (ch == ',')  return 1;
+    if (ch == '~')  return 1;
+    if (ch == '>')  return 1;
     return 0;
 }
 int charIsPrefix(char ch) {
