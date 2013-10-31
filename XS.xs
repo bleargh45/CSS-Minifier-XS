@@ -33,6 +33,7 @@ int charIsIdentifier(char ch) {
     if (ch == '.')  return 1;
     if (ch == '#')  return 1;
     if (ch == '@')  return 1;
+    if (ch == '%')  return 1;
     return 0;
 }
 int charIsInfix(char ch) {
@@ -377,6 +378,45 @@ Node* CssTokenizeString(const char* string) {
  * MINIFICATION FUNCTIONS
  * ****************************************************************************
  */
+
+/* checks to see if the string represents a "zero unit" */
+int CssIsZeroUnit(char* str) {
+    char* ptr = str;
+    int foundZero = 0;
+
+    /* Find and skip over any leading zero value */
+    while (*ptr == '0') {   /* leading zeros */
+        foundZero ++;
+        ptr++;
+    }
+    if (*ptr == '.') {      /* decimal point */
+        ptr++;
+    }
+    while (*ptr == '0') {   /* following zeros */
+        foundZero ++;
+        ptr++;
+    }
+
+    /* If we didn't find a zero, this isn't a Zero Unit */
+    if (!foundZero) {
+        return 0;
+    }
+
+    /* If it ends with a known Unit, its a Zero Unit */
+    if (0 == strcmp(ptr, "em")) { return 1; }
+    if (0 == strcmp(ptr, "ex")) { return 1; }
+    if (0 == strcmp(ptr, "in")) { return 1; }
+    if (0 == strcmp(ptr, "cm")) { return 1; }
+    if (0 == strcmp(ptr, "mm")) { return 1; }
+    if (0 == strcmp(ptr, "pt")) { return 1; }
+    if (0 == strcmp(ptr, "pc")) { return 1; }
+    if (0 == strcmp(ptr, "px")) { return 1; }
+    if (0 == strcmp(ptr, "%"))  { return 1; }
+
+    /* Nope, string contains something else; its not a Zero Unit */
+    return 0;
+}
+
 /* collapses all of the nodes to their shortest possible representation */
 void CssCollapseNodes(Node* curr) {
     int inMacIeCommentHack = 0;
@@ -400,6 +440,10 @@ void CssCollapseNodes(Node* curr) {
                     inMacIeCommentHack = 0;
                 }
                 } break;
+            case NODE_IDENTIFIER:
+                if (CssIsZeroUnit(curr->contents)) {
+                    CssSetNodeContents(curr, "0", 1);
+                }
             default:
                 break;
         }

@@ -80,6 +80,11 @@ Comments implementing the "Mac/IE Comment Hack" are collapsed down to the
 smallest possible comment that would still implement the hack ("/*\*/" to start
 the hack, and "/**/" to end it).
 
+=item Zero Units
+
+Zero Units (e.g. "0px") are reduced down to just "0", as the CSS specification
+indicates that the unit is not required when its a zero value.
+
 =back
 
 =head2 Pass 3: Pruning
