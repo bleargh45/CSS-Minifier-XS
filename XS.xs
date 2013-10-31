@@ -403,15 +403,21 @@ int CssIsZeroUnit(char* str) {
     }
 
     /* If it ends with a known Unit, its a Zero Unit */
-    if (0 == strcmp(ptr, "em")) { return 1; }
-    if (0 == strcmp(ptr, "ex")) { return 1; }
-    if (0 == strcmp(ptr, "in")) { return 1; }
-    if (0 == strcmp(ptr, "cm")) { return 1; }
-    if (0 == strcmp(ptr, "mm")) { return 1; }
-    if (0 == strcmp(ptr, "pt")) { return 1; }
-    if (0 == strcmp(ptr, "pc")) { return 1; }
-    if (0 == strcmp(ptr, "px")) { return 1; }
-    if (0 == strcmp(ptr, "%"))  { return 1; }
+    if (0 == strcmp(ptr, "em"))   { return 1; }
+    if (0 == strcmp(ptr, "ex"))   { return 1; }
+    if (0 == strcmp(ptr, "ch"))   { return 1; }
+    if (0 == strcmp(ptr, "rem"))  { return 1; }
+    if (0 == strcmp(ptr, "vw"))   { return 1; }
+    if (0 == strcmp(ptr, "vh"))   { return 1; }
+    if (0 == strcmp(ptr, "vmin")) { return 1; }
+    if (0 == strcmp(ptr, "vmax")) { return 1; }
+    if (0 == strcmp(ptr, "cm"))   { return 1; }
+    if (0 == strcmp(ptr, "mm"))   { return 1; }
+    if (0 == strcmp(ptr, "in"))   { return 1; }
+    if (0 == strcmp(ptr, "px"))   { return 1; }
+    if (0 == strcmp(ptr, "pt"))   { return 1; }
+    if (0 == strcmp(ptr, "pc"))   { return 1; }
+    if (0 == strcmp(ptr, "%"))    { return 1; }
 
     /* Nope, string contains something else; its not a Zero Unit */
     return 0;
