@@ -11,7 +11,6 @@ lib/CSS/Minifier/XS.pm
 t/01-loads.t
 t/02-minify.t
 t/03-minifies-to-nothing.t
-t/99-benchmark.t
 t/css/calc-operators.css
 t/css/calc-operators.min
 t/css/combinators.css
@@ -48,6 +47,7 @@ t/css/zero-units-zerooo.css
 t/css/zero-units-zerooo.min
 t/css/zero-units-zero-point-zero.css
 t/css/zero-units-zero-point-zero.min
+xt/benchmark.t
 xt/comparison.t
 xt/leaks.t
 xt/minimum-version.t
