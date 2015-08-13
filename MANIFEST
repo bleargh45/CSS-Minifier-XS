@@ -22,6 +22,8 @@ t/css/comments.css
 t/css/comments.min
 t/css/comments-mac-ie-hack.css
 t/css/comments-mac-ie-hack.min
+t/css/important.css
+t/css/important.min
 t/css/leading-whitespace.css
 t/css/leading-whitespace.min
 t/css/media.css

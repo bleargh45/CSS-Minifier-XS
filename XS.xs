@@ -162,6 +162,27 @@ int nodeEndsWith(Node* node, const char* string) {
 #define nodeIsPOSTFIXSIGIL(node)        (nodeIsSIGIL(node) && charIsPostfix(node->contents[0]))
 #define nodeIsCHAR(node,ch)             ((node->contents[0]==ch) && (node->length==1))
 
+/* checks if this node is the start of "!important" (with optional intravening
+ * whitespace. */
+int nodeStartsBANGIMPORTANT(Node* node) {
+    if (!node) return 0;
+
+    /* Doesn't start with a "!", nope */
+    if (!nodeIsCHAR(node,'!')) return 0;
+
+    /* Skip any following whitespace */
+    Node* next = node->next;
+    while (next && nodeIsWHITESPACE(next)) {
+        next = node->next;
+    }
+    if (!next) return 0;
+
+    /* Next node _better be_ "important" */
+    if (!nodeIsIDENTIFIER(next)) return 0;
+    if (nodeEquals(next, "important")) return 1;
+    return 0;
+}
+
 /* ****************************************************************************
  * NODE MANIPULATION FUNCTIONS
  * ****************************************************************************
@@ -490,6 +511,10 @@ int CssCanPrune(Node* node) {
             /* remove whitespace after comment blocks */
             if (prev && nodeIsBLOCKCOMMENT(prev))
                 return PRUNE_CURRENT;
+            /* remove whitespace before "!important" */
+            if (next && nodeStartsBANGIMPORTANT(next)) {
+                return PRUNE_CURRENT;
+            }
             /* leading whitespace gets pruned */
             if (!prev)
                 return PRUNE_CURRENT;
