@@ -1,0 +1,23 @@
+language: perl
+perl:
+  -  "5.21"
+  -  "5.20"
+  -  "5.18"
+  -  "5.16"
+  -  "5.14"
+  -  "5.12"
+  -  "5.10"
+  -  "5.8"
+
+# Include dependencies for all "xt/" tests.
+before_install:
+  - cpanm -n CSS::Compressor
+  - cpanm -n CSS::Minifier
+  - cpanm -n CSS::Packer
+  - cpanm -n Test::Pod Test::Pod::Coverage
+  - cpanm -n Test::MinimumVersion
+  - cpanm -n Test::LeakTrace
+  - cpanm -n File::Slurp File::Which
+
+# When building, include "xt/" directory too.
+script: "perl Build.PL && ./Build && prove -b -r --timer t/ xt/"
