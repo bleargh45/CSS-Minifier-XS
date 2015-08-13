@@ -426,6 +426,7 @@ int CssIsZeroUnit(char* str) {
 /* collapses all of the nodes to their shortest possible representation */
 void CssCollapseNodes(Node* curr) {
     int inMacIeCommentHack = 0;
+    int inFunction = 0;
     while (curr) {
         Node* next = curr->next;
         switch (curr->type) {
@@ -447,9 +448,12 @@ void CssCollapseNodes(Node* curr) {
                 }
                 } break;
             case NODE_IDENTIFIER:
-                if (CssIsZeroUnit(curr->contents)) {
+                if (CssIsZeroUnit(curr->contents) && !inFunction) {
                     CssSetNodeContents(curr, "0", 1);
                 }
+            case NODE_SIGIL:
+                if (nodeIsCHAR(curr,'(')) { inFunction = 1; }
+                if (nodeIsCHAR(curr,')')) { inFunction = 0; }
             default:
                 break;
         }

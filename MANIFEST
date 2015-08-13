@@ -36,6 +36,8 @@ t/css/trailing-whitespace.css
 t/css/trailing-whitespace.min
 t/css/units-preserved.css
 t/css/units-preserved.min
+t/css/zero-units-commafied.css
+t/css/zero-units-commafied.min
 t/css/zero-units-point-zero.css
 t/css/zero-units-point-zero.min
 t/css/zero-units-zero.css
