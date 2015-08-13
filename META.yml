@@ -20,4 +20,5 @@ provides:
     version: '0.10'
 resources:
   license: http://dev.perl.org/licenses/
+  repository: https://github.com/bleargh45/CSS-Minifier-XS
 version: '0.10'
