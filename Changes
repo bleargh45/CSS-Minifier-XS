@@ -3,6 +3,8 @@ Revision history for Perl extension CSS::Minifier::XS.
 0.10        ????
     - RT #90879; correct minification of %s in "hsl()" and "hsla()" functions
       Thanks to Philipp Soehnlein
+    - RT #103231; don't remove units on zero values inside of functions.
+      Thanks to Isaac Montoya, for an additional test case.
     - Now prunes leading whitespace before "!important"
         e.g. "color: red !important" becomes "color:red!important"
 
