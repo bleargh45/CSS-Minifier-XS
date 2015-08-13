@@ -49,5 +49,7 @@ t/css/zero-units-zerooo.min
 t/css/zero-units-zero-point-zero.css
 t/css/zero-units-zero-point-zero.min
 xt/comparison.t
+xt/leaks.t
+xt/minimum-version.t
 xt/pod.t
 xt/pod-coverage.t
