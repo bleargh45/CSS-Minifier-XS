@@ -48,5 +48,6 @@ t/css/zero-units-zerooo.css
 t/css/zero-units-zerooo.min
 t/css/zero-units-zero-point-zero.css
 t/css/zero-units-zero-point-zero.min
+xt/comparison.t
 xt/pod.t
 xt/pod-coverage.t
