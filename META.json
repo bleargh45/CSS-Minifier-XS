@@ -4,7 +4,7 @@
       "Graham TerMarsch (cpan@howlingfrog.com)"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4004, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.4206",
    "license" : [
       "perl_5"
    ],
@@ -22,14 +22,14 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.40"
+            "Module::Build" : "0.42"
          }
       }
    },
    "provides" : {
       "CSS::Minifier::XS" : {
          "file" : "lib/CSS/Minifier/XS.pm",
-         "version" : "0.09"
+         "version" : "0.10"
       }
    },
    "release_status" : "stable",
@@ -38,5 +38,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.09"
+   "version" : "0.10"
 }
