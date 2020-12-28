@@ -12,6 +12,12 @@ use IO::File;
 use Benchmark qw(countit);
 
 ###############################################################################
+# Only run Comparison if asked for.
+unless ($ENV{BENCHMARK}) {
+    plan skip_all => 'Skipping Benchmark; use BENCHMARK=1 to run';
+}
+
+###############################################################################
 # How long are we allowing each compressor to run?
 my $time = 5;
 

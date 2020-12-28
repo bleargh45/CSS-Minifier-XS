@@ -6,6 +6,12 @@ use Benchmark qw(countit);
 use CSS::Minifier::XS;
 
 ###############################################################################
+# Only run Benchmark if asked for.
+unless ($ENV{BENCHMARK}) {
+    plan skip_all => 'Skipping Benchmark; use BENCHMARK=1 to run';
+}
+
+###############################################################################
 # check if CSS::Minifier available, so we can do a benchmark comparison
 eval { require CSS::Minifier };
 if ($@) {
