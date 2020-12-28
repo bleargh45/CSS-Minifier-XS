@@ -1,6 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
 {{$NEXT}}
+
+0.10      2020-12-28 11:00:17-08:00 America/Vancouver
     - RT #90879; correct minification of %s in "hsl()" and "hsla()" functions
       Thanks to Philipp Soehnlein
     - RT #103231; don't remove units on zero values inside of functions.
