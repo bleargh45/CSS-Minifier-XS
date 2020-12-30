@@ -11,7 +11,7 @@ $minified = minify($css);
 
 # DESCRIPTION
 
-`CSS::Minifier::XS` is a CSS "minifier"; its designed to remove un-necessary
+`CSS::Minifier::XS` is a CSS "minifier"; its designed to remove unnecessary
 whitespace and comments from CSS files, while also **not** breaking the CSS.
 
 `CSS::Minifier::XS` is similar in function to `CSS::Minifier`, but is
@@ -25,7 +25,7 @@ substantially faster as its written in XS and not just pure Perl.
 
 # HOW IT WORKS
 
-`CSS::Minifier::XS` minifies the CSS by removing un-necessary whitespace from
+`CSS::Minifier::XS` minifies the CSS by removing unnecessary whitespace from
 CSS documents.  Comment blocks are also removed, _except_ when (a) they
 contain the word "copyright" in them, or (b) they're needed to implement the
 "Mac/IE Comment Hack".
@@ -61,12 +61,12 @@ results we only want to include them at their shortest.
 
 - Zero Units
 
-    Zero Units (e.g. "0px") are reduced down to just "0", as the CSS specification
+    Zero Units (e.g. `0px`) are reduced down to just "0", as the CSS specification
     indicates that the unit is not required when its a zero value.
 
 ## Pass 3: Pruning
 
-We then go back through the token list and prune and remove un-necessary
+We then go back through the token list and prune and remove unnecessary
 tokens.
 
 - Whitespace
