@@ -6,7 +6,8 @@ CSS::Minifier::XS - XS based CSS minifier
 
 ```perl
 use CSS::Minifier::XS qw(minify);
-$minified = minify($css);
+my $css      = '...';
+my $minified = minify($css);
 ```
 
 # DESCRIPTION

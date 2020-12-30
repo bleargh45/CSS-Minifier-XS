@@ -23,7 +23,8 @@ CSS::Minifier::XS - XS based CSS minifier
 =head1 SYNOPSIS
 
   use CSS::Minifier::XS qw(minify);
-  $minified = minify($css);
+  my $css      = '...';
+  my $minified = minify($css);
 
 =head1 DESCRIPTION
 
