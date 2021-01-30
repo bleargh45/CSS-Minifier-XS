@@ -26,6 +26,7 @@ my $time = 5;
 my $curl = which('curl');
 my @libs = qw(
     https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css
+    https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css
 );
 
 ###############################################################################

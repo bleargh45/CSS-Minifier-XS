@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use File::Slurp qw(slurp);
+use File::Which qw(which);
 use Benchmark qw(countit);
 use CSS::Minifier::XS;
 
@@ -17,11 +17,14 @@ eval { require CSS::Minifier };
 if ($@) {
     plan skip_all => 'CSS::Minifier not available for benchmark comparison';
 }
-plan tests => 1;
 
 ###############################################################################
-# get the list of CSS files we're going to run through for testing
-my @files = <t/css/*.css>;
+# What CSS docs do we want to try compressing?
+my $curl = which('curl');
+my @libs = qw(
+    https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css
+    https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css
+);
 
 ###############################################################################
 # time test the PurePerl version against the XS version.
@@ -29,14 +32,8 @@ compare_benchmark: {
     my $count;
     my $time = 10;
 
-    # build a longer CSS document to process; 64KBytes should be suitable
-    my $str = '';
-    while (1) {
-        foreach my $file (@files) {
-            $str .= slurp( $file );
-        }
-        last if (length($str) > (64*1024));
-    }
+    # build up a big CSS document to minify
+    my $str = join "\n", map { qx{$curl --silent $_} } @libs;
 
     # benchmark the original "pure perl" version
     $count = countit( $time, sub { CSS::Minifier::minify(input=>$str) } );
@@ -52,3 +49,6 @@ compare_benchmark: {
     diag( "\tperl\t=> $rate_pp bytes/sec" );
     diag( "\txs\t=> $rate_xs bytes/sec" );
 }
+
+###############################################################################
+done_testing();
