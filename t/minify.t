@@ -358,6 +358,18 @@ subtest 'calc() method' => sub {
 };
 
 ###############################################################################
+# RT #36557: Nasty segfault on minifying comment-only css input
+#
+# Actually turns out to be that *anything* that minifies to "nothing" causes
+# a segfault in Perl-5.8.  Perl-5.10 seems immune.
+subtest 'minifies to nothing' => sub {
+  my $given  = '/* */';
+  my $expect = undef;
+  my $got    = minify($given);
+  is $got, $expect;
+};
+
+###############################################################################
 # General/broad test
 subtest 'general/broad test' => sub {
   my $given
