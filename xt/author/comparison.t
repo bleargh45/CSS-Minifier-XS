@@ -94,5 +94,8 @@ sub do_compress {
     my $rate     = sprintf('%ld', ($count->iters / $time) * $before);
     my $savings  = sprintf('%0.2f%%', (($before - $after) / $before) * 100);
 
-    pass "$name: before[$before] after[$after] savings[$savings] rate[$rate Bytes/sec]";
+    my $results  = sprintf("%20s before[%7d] after[%7d] savings[%6s] rate[%8d Bytes/sec]",
+      $name, $before, $after, $savings, $rate,
+    );
+    pass $results;
 }
