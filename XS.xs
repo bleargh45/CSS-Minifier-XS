@@ -485,7 +485,7 @@ void CssCollapseNodes(Node* curr) {
             case NODE_WHITESPACE:
                 CssCollapseNodeToWhitespace(curr);
                 break;
-            case NODE_BLOCKCOMMENT: {
+            case NODE_BLOCKCOMMENT:
                 if (!inMacIeCommentHack && nodeIsMACIECOMMENTHACK(curr)) {
                     /* START of mac/ie hack */
                     CssSetNodeContents(curr, "/*\\*/", 5);
@@ -498,7 +498,7 @@ void CssCollapseNodes(Node* curr) {
                     curr->can_prune = 0;
                     inMacIeCommentHack = 0;
                 }
-                } break;
+                break;
             case NODE_IDENTIFIER:
                 if (CssIsZeroUnit(curr->contents) && !inFunction) {
                     if (CssIsZeroPercent(curr->contents)) {
