@@ -338,7 +338,7 @@ subtest 'zerooooo-point-zeroooo without units' => sub {
 };
 
 ###############################################################################
-# Inside of "calc()", whitespace surrounding operators is preserved.
+# Inside of "calc()", whitespace surrounding operators needs to be preserved.
 subtest 'calc() method' => sub {
   subtest 'plus' => sub {
     my $given  = 'h1   { width: calc( 100px + 10% ) }';
