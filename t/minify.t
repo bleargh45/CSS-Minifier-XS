@@ -220,7 +220,7 @@ subtest 'point-zero without units' => sub {
   # Inside of a function, units/zeros are preserved.
   subtest 'inside a function' => sub {
     my $given  = 'p { width: calc(300px - .0px) }';
-    my $expect = 'p{width:calc(300px - .0px)}';
+    my $expect = 'p{width:calc(300px - 0px)}';
     my $got    = minify($given);
     is $got, $expect;
   };
@@ -275,7 +275,7 @@ subtest 'zero-point-zero without units' => sub {
   # Inside of a function, units/zeros are preserved.
   subtest 'inside a function' => sub {
     my $given  = 'p { width: calc(300px - 0.0px) }';
-    my $expect = 'p{width:calc(300px - 0.0px)}';
+    my $expect = 'p{width:calc(300px - 0px)}';
     my $got    = minify($given);
     is $got, $expect;
   };
@@ -303,7 +303,7 @@ subtest 'zerooooooo without units' => sub {
   # Inside of a function, units/zeros are preserved.
   subtest 'inside a function' => sub {
     my $given  = 'p { width: calc(300px - 0000px) }';
-    my $expect = 'p{width:calc(300px - 0000px)}';
+    my $expect = 'p{width:calc(300px - 0px)}';
     my $got    = minify($given);
     is $got, $expect;
   };
@@ -331,7 +331,7 @@ subtest 'zerooooo-point-zeroooo without units' => sub {
   # Inside of a function, units/zeros are preserved.
   subtest 'inside a function' => sub {
     my $given  = 'p { width: calc(300px - 000.0000px) }';
-    my $expect = 'p{width:calc(300px - 000.0000px)}';
+    my $expect = 'p{width:calc(300px - 0px)}';
     my $got    = minify($given);
     is $got, $expect;
   };
