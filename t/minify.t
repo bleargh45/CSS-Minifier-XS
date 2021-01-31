@@ -125,7 +125,6 @@ subtest 'css selector combinators' => sub {
   subtest 'adjacent-sibling' => sub {
     # adjacent siblings don't get whitespace removed, as the "+" could also
     # be seen as a mathematical operator
-    # XXX - ??? WHY DON'T I MINIFY HERE
     my $given  = 'h1 + p { background: green }';
     my $expect = 'h1 + p{background:green}';
     my $got    = minify($given);
