@@ -1,6 +1,10 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
 {{$NEXT}}
+    - Internals; avoid allocating memory for each node as we tokenize the
+      document, and simply use pointers back into original string.
+      - Dramatically improves performance; local testing shows boost from
+        ~25/s to ~42MB/s
 
 0.12      2021-01-30 21:46:07-08:00 America/Vancouver
     - rewrote test suite into a single ".t" test

@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+const char* start_ie_hack = "/*\\*/";
+const char* end_ie_hack   = "/**/";
+
 /* ****************************************************************************
  * CHARACTER CLASS METHODS
  * ****************************************************************************
@@ -78,7 +81,7 @@ struct _Node {
     Node*       prev;
     Node*       next;
     /* node internals */
-    char*       contents;
+    const char* contents;
     size_t      length;
     NodeType    type;
     int         can_prune;
@@ -101,12 +104,18 @@ typedef struct {
 
 /* checks to see if the node is the given string, case INSENSITIVELY */
 int nodeEquals(Node* node, const char* string) {
-    return (strcasecmp(node->contents, string) == 0);
+    /* not the same length? Not equal */
+    size_t len = strlen(string);
+    if (len != node->length)
+        return 0;
+    /* compare contents to see if they're equal */
+    return (strncasecmp(node->contents, string, node->length) == 0);
 }
 
 /* checks to see if the node contains the given string, case INSENSITIVELY */
 int nodeContains(Node* node, const char* string) {
     const char* haystack = node->contents;
+    const char* endofhay = haystack + node->length;
     size_t len = strlen(string);
     char ul_start[2] = { tolower(*string), toupper(*string) };
 
@@ -118,9 +127,13 @@ int nodeContains(Node* node, const char* string) {
     while (haystack && *haystack) {
         /* find first char of needle */
         haystack = strpbrk( haystack, ul_start );
+        /* didn't find it? Oh well. */
         if (haystack == NULL)
             return 0;
-        /* check if the rest matches */
+        /* found it, but will the end be past the end of our node? */
+        if ((haystack+len) > endofhay)
+            return 0;
+        /* see if it matches */
         if (strncasecmp(haystack, string, len) == 0)
             return 1;
         /* nope, move onto next character in the haystack */
@@ -134,18 +147,22 @@ int nodeContains(Node* node, const char* string) {
 /* checks to see if the node begins with the given string, case INSENSITIVELY.
  */
 int nodeBeginsWith(Node* node, const char* string) {
+    /* If the string is longer than the node, it's not going to match */
     size_t len = strlen(string);
     if (len > node->length)
         return 0;
+    /* check for match */
     return (strncasecmp(node->contents, string, len) == 0);
 }
 
 /* checks to see if the node ends with the given string, case INSENSITVELY. */
 int nodeEndsWith(Node* node, const char* string) {
+    /* If the string is longer than the node, it's not going to match */
     size_t len = strlen(string);
-    size_t off = node->length - len;
     if (len > node->length)
         return 0;
+    /* check for match */
+    size_t off = node->length - len;
     return (strncasecmp(node->contents+off, string, len) == 0);
 }
 
@@ -202,8 +219,6 @@ Node* CssAllocNode() {
 
 /* frees the memory used by a node */
 void CssFreeNode(Node* node) {
-    if (node->contents)
-        Safefree(node->contents);
     Safefree(node);
 }
 void CssFreeNodeList(Node* head) {
@@ -216,28 +231,15 @@ void CssFreeNodeList(Node* head) {
 
 /* clears the contents of a node */
 void CssClearNodeContents(Node* node) {
-    if (node->contents)
-        Safefree(node->contents);
     node->contents = NULL;
     node->length = 0;
 }
 
 /* sets the contents of a node */
 void CssSetNodeContents(Node* node, const char* string, size_t len) {
-    /* if the buffer is already big enough, just overwrite it */
-    if (node->length >= len) {
-        memcpy( node->contents, string, len );
-        node->contents[len] = '\0';
-        node->length = len;
-    }
-    /* otherwise free the buffer, allocate a new one, and copy it in */
-    else {
-        CssClearNodeContents(node);
-        node->length = len;
-        /* allocate string, fill with NULLs, and copy */
-        Newz(0, node->contents, (len+1), char);
-        memcpy( node->contents, string, len );
-    }
+    node->contents = string;
+    node->length   = len;
+    return;
 }
 
 /* removes the node from the list and discards it entirely */
@@ -269,15 +271,16 @@ void CssCollapseNodeToWhitespace(Node* node) {
 
     /* if we've got a buffer with contents, reduce it */
     if (node->contents) {
-        char ws = node->contents[0];
+        /* start by pointing to first whitespace char, and just that one char */
+        CssSetNodeContents(node, node->contents, 1);
+        /* if we can find an "endspace" char, point to that instead */
         size_t idx;
         for (idx=0; idx<node->length; idx++) {
             if (charIsEndspace(node->contents[idx])) {
-                ws = node->contents[idx];
+                CssSetNodeContents(node, node->contents+idx, 1);
                 break;
             }
         }
-        CssSetNodeContents(node, &ws, 1);
     }
 }
 
@@ -419,7 +422,7 @@ Node* CssTokenizeString(const char* string) {
  * pointer to the next character _after_ the zero value.  If no zero value is
  * found, return NULL.
  */
-char* CssSkipZeroValue(char* str) {
+const char* CssSkipZeroValue(const char* str) {
     int foundZero = 0;
 
     /* Find and skip over any leading zero value */
@@ -443,32 +446,32 @@ char* CssSkipZeroValue(char* str) {
 }
 
 /* checks to see if the string contains a known CSS unit */
-int CssIsKnownUnit(char* str) {
+int CssIsKnownUnit(const char* str) {
     /* If it ends with a known Unit, its a Zero Unit */
-    if (0 == strcmp(str, "em"))   { return 1; }
-    if (0 == strcmp(str, "ex"))   { return 1; }
-    if (0 == strcmp(str, "ch"))   { return 1; }
-    if (0 == strcmp(str, "rem"))  { return 1; }
-    if (0 == strcmp(str, "vw"))   { return 1; }
-    if (0 == strcmp(str, "vh"))   { return 1; }
-    if (0 == strcmp(str, "vmin")) { return 1; }
-    if (0 == strcmp(str, "vmax")) { return 1; }
-    if (0 == strcmp(str, "cm"))   { return 1; }
-    if (0 == strcmp(str, "mm"))   { return 1; }
-    if (0 == strcmp(str, "in"))   { return 1; }
-    if (0 == strcmp(str, "px"))   { return 1; }
-    if (0 == strcmp(str, "pt"))   { return 1; }
-    if (0 == strcmp(str, "pc"))   { return 1; }
-    if (0 == strcmp(str, "%"))    { return 1; }
+    if (0 == strncmp(str, "em",   2)) { return 1; }
+    if (0 == strncmp(str, "ex",   2)) { return 1; }
+    if (0 == strncmp(str, "ch",   2)) { return 1; }
+    if (0 == strncmp(str, "rem",  3)) { return 1; }
+    if (0 == strncmp(str, "vw",   2)) { return 1; }
+    if (0 == strncmp(str, "vh",   2)) { return 1; }
+    if (0 == strncmp(str, "vmin", 3)) { return 1; }
+    if (0 == strncmp(str, "vmax", 3)) { return 1; }
+    if (0 == strncmp(str, "cm",   2)) { return 1; }
+    if (0 == strncmp(str, "mm",   2)) { return 1; }
+    if (0 == strncmp(str, "in",   2)) { return 1; }
+    if (0 == strncmp(str, "px",   2)) { return 1; }
+    if (0 == strncmp(str, "pt",   2)) { return 1; }
+    if (0 == strncmp(str, "pc",   2)) { return 1; }
+    if (0 == strncmp(str, "%",    1)) { return 1; }
 
     /* Nope */
     return 0;
 }
 
 /* checks to see if the string represents a "zero unit" */
-int CssIsZeroUnit(char* str) {
+int CssIsZeroUnit(const char* str) {
     /* Does it start with a zero value? */
-    char* ptr = CssSkipZeroValue(str);
+    const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
         return 0;
     }
@@ -478,22 +481,22 @@ int CssIsZeroUnit(char* str) {
 }
 
 /* checks to see if the string represents a "zero percentage" */
-int CssIsZeroPercent(char* str) {
+int CssIsZeroPercent(const char* str) {
     /* Does it start with a zero value? */
-    char* ptr = CssSkipZeroValue(str);
+    const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
         return 0;
     }
 
     /* And does it end with a "%"? */
-    if (0 == strcmp(ptr, "%")) { return 1; }
+    if (0 == strncmp(ptr, "%", 1)) { return 1; }
     return 0;
 }
 
 /* checks to see if the string contains "just zeros" (with no units or percentages) */
-int CssIsJustZeros(char* str) {
+int CssIsJustZeros(const char* str) {
     /* Does it start with a zero value? */
-    char* ptr = CssSkipZeroValue(str);
+    const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
         return 0;
     }
@@ -516,13 +519,13 @@ void CssCollapseNodes(Node* curr) {
             case NODE_BLOCKCOMMENT:
                 if (!inMacIeCommentHack && nodeIsMACIECOMMENTHACK(curr)) {
                     /* START of mac/ie hack */
-                    CssSetNodeContents(curr, "/*\\*/", 5);
+                    CssSetNodeContents(curr, start_ie_hack, strlen(start_ie_hack));
                     curr->can_prune = 0;
                     inMacIeCommentHack = 1;
                 }
                 else if (inMacIeCommentHack && !nodeIsMACIECOMMENTHACK(curr)) {
                     /* END of mac/ie hack */
-                    CssSetNodeContents(curr, "/**/", 4);
+                    CssSetNodeContents(curr, end_ie_hack, strlen(end_ie_hack));
                     curr->can_prune = 0;
                     inMacIeCommentHack = 0;
                 }
@@ -532,34 +535,38 @@ void CssCollapseNodes(Node* curr) {
                     /* Zeros can be minified, but have varying rules as to how */
                     if (CssIsJustZeros(curr->contents)) {
                         /* nothing but zeros, so truncate to "0" */
-                        CssSetNodeContents(curr, "0", 1);
+                        const char* last_ch = curr->contents + curr->length - 1;
+                        CssSetNodeContents(curr, last_ch, 1);
                     }
                     else if (CssIsZeroPercent(curr->contents)) {
                         /* a zero percentage; truncate to "0%" */
-                        CssSetNodeContents(curr, "0%", 2);
+                        const char* last_ch = curr->contents + curr->length - 2;
+                        CssSetNodeContents(curr, last_ch, 2);
                     }
                     else if (inFunction) {
                         /* inside a function, units need to be preserved */
                         /* but we can reduce it to "0" units */
 
                         /* ... find the first non-zero character in the buffer */
-                        char* zero = CssSkipZeroValue(curr->contents);
+                        const char* zero = CssSkipZeroValue(curr->contents);
                         /* ... back up one char; now pointing at "the last zero" */
                         zero --;
                         /* ... if that's not the start of the buffer ... */
                         if (zero != curr->contents) {
                             /* set the buffer to "0 + units", blowing away the earlier bits */
-                            char* buffer;
-                            int len = strlen(zero);
-                            Newz(0, buffer, (len+1), char);
-                            memcpy(buffer, zero, len);
-                            CssSetNodeContents(curr, buffer, len);
-                            Safefree(buffer);
+                            int len = curr->length - (zero - curr->contents);
+                            CssSetNodeContents(curr, zero, len);
                         }
                     }
                     else {
                         /* not in a function, truncate to "0" and drop the units */
-                        CssSetNodeContents(curr, "0", 1);
+
+                        /* ... find first non-zero character in the buffer */
+                        const char* zero = CssSkipZeroValue(curr->contents);
+                        /* ... back up one char; now pointing at "the last zero" */
+                        zero --;
+                        /* ... point to that zero, and truncate the units */
+                        CssSetNodeContents(curr, zero, 1);
                     }
                 }
                 break;
