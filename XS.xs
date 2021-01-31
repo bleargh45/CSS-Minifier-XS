@@ -511,6 +511,7 @@ void CssCollapseNodes(Node* curr) {
             case NODE_SIGIL:
                 if (nodeIsCHAR(curr,'(')) { inFunction = 1; }
                 if (nodeIsCHAR(curr,')')) { inFunction = 0; }
+                break;
             default:
                 break;
         }
