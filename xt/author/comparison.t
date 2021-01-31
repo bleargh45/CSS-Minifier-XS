@@ -22,8 +22,14 @@ unless ($ENV{BENCHMARK}) {
 my $time = 5;
 
 ###############################################################################
-# What CSS docs do we want to try compressing?
+# Find "curl"
 my $curl = which('curl');
+unless ($curl) {
+    plan skip_all => 'curl required for comparison';
+}
+
+###############################################################################
+# What CSS docs do we want to try compressing?
 my @libs = qw(
     https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css
     https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css
