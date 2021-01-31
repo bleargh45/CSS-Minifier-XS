@@ -6,7 +6,6 @@ use Test::More;
 use CSS::Compressor;
 use CSS::Minifier qw();
 use CSS::Minifier::XS qw();
-use CSS::Packer;
 use File::Which qw(which);
 use IO::File;
 use Benchmark qw(countit);
@@ -44,13 +43,6 @@ foreach my $uri (@libs) {
         my $content = qx{$curl --silent $uri};
         ok defined $content, 'fetched CSS';
         BAIL_OUT("No CSS fetched!") unless (length($content));
-
-        # CSS::Packer
-        do_compress('CSS::Packer', $content, sub {
-            my $css = shift;
-            CSS::Packer::minify(\$css);
-            return $css;
-        } );
 
         # CSS::Compressor
         do_compress('CSS::Compressor', $content, sub {
