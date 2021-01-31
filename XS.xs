@@ -224,11 +224,20 @@ void CssClearNodeContents(Node* node) {
 
 /* sets the contents of a node */
 void CssSetNodeContents(Node* node, const char* string, size_t len) {
-    CssClearNodeContents(node);
-    node->length = len;
-    /* allocate string, fill with NULLs, and copy */
-    Newz(0, node->contents, (len+1), char);
-    strncpy( node->contents, string, len );
+    /* if the buffer is already big enough, just overwrite it */
+    if (node->length >= len) {
+        strncpy( node->contents, string, len );
+        node->contents[len] = '\0';
+        node->length = len;
+    }
+    /* otherwise free the buffer, allocate a new one, and copy it in */
+    else {
+        CssClearNodeContents(node);
+        node->length = len;
+        /* allocate string, fill with NULLs, and copy */
+        Newz(0, node->contents, (len+1), char);
+        strncpy( node->contents, string, len );
+    }
 }
 
 /* removes the node from the list and discards it entirely */
