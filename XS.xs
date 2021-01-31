@@ -226,7 +226,7 @@ void CssClearNodeContents(Node* node) {
 void CssSetNodeContents(Node* node, const char* string, size_t len) {
     /* if the buffer is already big enough, just overwrite it */
     if (node->length >= len) {
-        strncpy( node->contents, string, len );
+        memcpy( node->contents, string, len );
         node->contents[len] = '\0';
         node->length = len;
     }
@@ -236,7 +236,7 @@ void CssSetNodeContents(Node* node, const char* string, size_t len) {
         node->length = len;
         /* allocate string, fill with NULLs, and copy */
         Newz(0, node->contents, (len+1), char);
-        strncpy( node->contents, string, len );
+        memcpy( node->contents, string, len );
     }
 }
 
@@ -552,7 +552,7 @@ void CssCollapseNodes(Node* curr) {
                             char* buffer;
                             int len = strlen(zero);
                             Newz(0, buffer, (len+1), char);
-                            strncpy(buffer, zero, len);
+                            memcpy(buffer, zero, len);
                             CssSetNodeContents(curr, buffer, len);
                             Safefree(buffer);
                         }
