@@ -41,7 +41,6 @@ int charIsInfix(char ch) {
     if (ch == '{')  return 1;
     if (ch == '}')  return 1;
     if (ch == ';')  return 1;
-    if (ch == ':')  return 1;
     if (ch == ',')  return 1;
     if (ch == '~')  return 1;
     if (ch == '>')  return 1;
@@ -50,6 +49,7 @@ int charIsInfix(char ch) {
 int charIsPrefix(char ch) {
     /* WS after these characters can be removed */
     if (ch == '(')  return 1;   /* requires leading WS when used in @media */
+    if (ch == ':')  return 1;   /* requires leading WS when used in pseudo-selector */
     return charIsInfix(ch);
 }
 int charIsPostfix(char ch) {

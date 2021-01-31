@@ -141,6 +141,18 @@ subtest 'css selector combinators' => sub {
 };
 
 ###############################################################################
+# CSS pseudo-selectors get leading whitespace preserved
+# - which (unfortunately) means that "whitespace before a ':' is significant",
+#   as otherwise we need to truly understand the context that we are in when
+#   we see a ":" to determine if we can eliminate the whitespace or not
+subtest 'pseudo-selectors' => sub {
+  my $given  = '#test :link { color: red; }';
+  my $expect = '#test :link{color:red}';
+  my $got    = minify($given);
+  is $got, $expect;
+};
+
+###############################################################################
 # Media selectors require "(" to retain leading whitespace, which is
 # minified.
 subtest 'media selectors' => sub {
