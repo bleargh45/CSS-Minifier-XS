@@ -30,9 +30,11 @@ unless ($curl) {
 
 ###############################################################################
 # What CSS docs do we want to try compressing?
-my @libs = qw(
-    https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css
-    https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css
+my @libs = (
+    'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.css',
+    'https://cdn.jsdelivr.net/npm/water.css@2/out/water.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/fontawesome.css',
 );
 
 ###############################################################################
