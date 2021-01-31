@@ -253,6 +253,12 @@ void CssAppendNode(Node* element, Node* node) {
  * endspace characters, that is what we're collapsed to.
  */
 void CssCollapseNodeToWhitespace(Node* node) {
+    /* if we're already a single character, nothing to do; can't get any smaller */
+    if (node->length == 1) {
+        return;
+    }
+
+    /* if we've got a buffer with contents, reduce it */
     if (node->contents) {
         char ws = node->contents[0];
         size_t idx;
