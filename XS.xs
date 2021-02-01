@@ -369,48 +369,39 @@ void _CssExtractSigil(CssDoc* doc, Node* node) {
 }
 
 /* tokenizes the given string and returns the list of nodes */
-Node* CssTokenizeString(const char* string) {
-    CssDoc doc;
-
-    /* initialize our CSS document object */
-    doc.head = NULL;
-    doc.tail = NULL;
-    doc.buffer = string;
-    doc.length = strlen(string);
-    doc.offset = 0;
-
+Node* CssTokenizeString(CssDoc* doc, const char* string) {
     /* parse the CSS */
-    while ((doc.offset < doc.length) && (doc.buffer[doc.offset])) {
+    while ((doc->offset < doc->length) && (doc->buffer[doc->offset])) {
         /* allocate a new node */
         Node* node = CssAllocNode();
-        if (!doc.head)
-            doc.head = node;
-        if (!doc.tail)
-            doc.tail = node;
+        if (!doc->head)
+            doc->head = node;
+        if (!doc->tail)
+            doc->tail = node;
 
         /* parse the next node out of the CSS */
-        if ((doc.buffer[doc.offset] == '/') && (doc.buffer[doc.offset+1] == '*'))
-            _CssExtractBlockComment(&doc, node);
-        else if ((doc.buffer[doc.offset] == '"') || (doc.buffer[doc.offset] == '\''))
-            _CssExtractLiteral(&doc, node);
-        else if (charIsWhitespace(doc.buffer[doc.offset]))
-            _CssExtractWhitespace(&doc, node);
-        else if (charIsIdentifier(doc.buffer[doc.offset]))
-            _CssExtractIdentifier(&doc, node);
+        if ((doc->buffer[doc->offset] == '/') && (doc->buffer[doc->offset+1] == '*'))
+            _CssExtractBlockComment(doc, node);
+        else if ((doc->buffer[doc->offset] == '"') || (doc->buffer[doc->offset] == '\''))
+            _CssExtractLiteral(doc, node);
+        else if (charIsWhitespace(doc->buffer[doc->offset]))
+            _CssExtractWhitespace(doc, node);
+        else if (charIsIdentifier(doc->buffer[doc->offset]))
+            _CssExtractIdentifier(doc, node);
         else
-            _CssExtractSigil(&doc, node);
+            _CssExtractSigil(doc, node);
 
         /* move ahead to the end of the parsed node */
-        doc.offset += node->length;
+        doc->offset += node->length;
 
         /* add the node to our list of nodes */
-        if (node != doc.tail)
-            CssAppendNode(doc.tail, node);
-        doc.tail = node;
+        if (node != doc->tail)
+            CssAppendNode(doc->tail, node);
+        doc->tail = node;
     }
 
     /* return the node list */
-    return doc.head;
+    return doc->head;
 }
 
 /* ****************************************************************************
@@ -700,8 +691,17 @@ Node* CssPruneNodes(Node *head) {
  */
 char* CssMinify(const char* string) {
     char* results;
+    CssDoc doc;
+
+    /* initialize our CSS document object */
+    doc.head = NULL;
+    doc.tail = NULL;
+    doc.buffer = string;
+    doc.length = strlen(string);
+    doc.offset = 0;
+
     /* PASS 1: tokenize CSS into a list of nodes */
-    Node* head = CssTokenizeString(string);
+    Node* head = CssTokenizeString(&doc, string);
     if (!head) return NULL;
     /* PASS 2: collapse nodes */
     CssCollapseNodes(head);
