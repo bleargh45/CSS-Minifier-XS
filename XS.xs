@@ -87,8 +87,23 @@ struct _Node {
     int         can_prune;
 };
 
+#define NODE_SET_SIZE 50000
+
+struct _NodeSet;
+typedef struct _NodeSet NodeSet;
+struct _NodeSet {
+    /* link to next NodeSet */
+    NodeSet*    next;
+    /* Nodes in this Set */
+    Node        nodes[NODE_SET_SIZE];
+    size_t      next_node;
+};
+
 typedef struct {
-    /* linked list pointers */
+    /* singly linked list of NodeSets */
+    NodeSet*    head_set;
+    NodeSet*    tail_set;
+    /* doubly linked list of Nodes */
     Node*       head;
     Node*       tail;
     /* doc internals */
@@ -205,9 +220,24 @@ int nodeStartsBANGIMPORTANT(Node* node) {
  * ****************************************************************************
  */
 /* allocates a new node */
-Node* CssAllocNode() {
+Node* CssAllocNode(CssDoc* doc) {
     Node* node;
-    Newz(0, node, 1, Node);
+    NodeSet* set = doc->tail_set;
+
+    /* if our current NodeSet is full, allocate a new NodeSet */
+    if (set->next_node >= NODE_SET_SIZE) {
+        NodeSet* next_set;
+        Newz(0, next_set, 1, NodeSet);
+        set->next = next_set;
+        doc->tail_set = next_set;
+        set = next_set;
+    }
+
+    /* grab the next Node out of the NodeSet */
+    node = set->nodes + set->next_node;
+    set->next_node ++;
+
+    /* initialize the node */
     node->prev = NULL;
     node->next = NULL;
     node->contents = NULL;
@@ -215,18 +245,6 @@ Node* CssAllocNode() {
     node->type = NODE_EMPTY;
     node->can_prune = 1;
     return node;
-}
-
-/* frees the memory used by a node */
-void CssFreeNode(Node* node) {
-    Safefree(node);
-}
-void CssFreeNodeList(Node* head) {
-    while (head) {
-        Node* tmp = head->next;
-        CssFreeNode(head);
-        head = tmp;
-    }
 }
 
 /* clears the contents of a node */
@@ -248,7 +266,6 @@ void CssDiscardNode(Node* node) {
         node->prev->next = node->next;
     if (node->next)
         node->next->prev = node->prev;
-    CssFreeNode(node);
 }
 
 /* appends the node to the given element */
@@ -373,7 +390,7 @@ Node* CssTokenizeString(CssDoc* doc, const char* string) {
     /* parse the CSS */
     while ((doc->offset < doc->length) && (doc->buffer[doc->offset])) {
         /* allocate a new node */
-        Node* node = CssAllocNode();
+        Node* node = CssAllocNode(doc);
         if (!doc->head)
             doc->head = node;
         if (!doc->tail)
@@ -699,6 +716,8 @@ char* CssMinify(const char* string) {
     doc.buffer = string;
     doc.length = strlen(string);
     doc.offset = 0;
+    Newz(0, doc.head_set, 1, NodeSet);
+    doc.tail_set = doc.head_set;
 
     /* PASS 1: tokenize CSS into a list of nodes */
     Node* head = CssTokenizeString(&doc, string);
@@ -726,8 +745,15 @@ char* CssMinify(const char* string) {
         }
         *ptr = 0;
     }
-    /* free memory used by node list */
-    CssFreeNodeList(head);
+    /* free memory used by the NodeSets */
+    {
+        NodeSet* curr = doc.head_set;
+        while (curr) {
+            NodeSet* next = curr->next;
+            Safefree(curr);
+            curr = next;
+        }
+    }
     /* return resulting minified CSS back to caller */
     return results;
 }
