@@ -247,12 +247,6 @@ Node* CssAllocNode(CssDoc* doc) {
     return node;
 }
 
-/* clears the contents of a node */
-void CssClearNodeContents(Node* node) {
-    node->contents = NULL;
-    node->length = 0;
-}
-
 /* sets the contents of a node */
 void CssSetNodeContents(Node* node, const char* string, size_t len) {
     node->contents = string;
