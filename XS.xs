@@ -435,14 +435,14 @@ const char* CssSkipZeroValue(const char* str) {
 
     /* Find and skip over any leading zero value */
     while (*str == '0') {   /* leading zeros */
-        foundZero ++;
+        foundZero = 1;
         str++;
     }
     if (*str == '.') {      /* decimal point */
         str++;
     }
     while (*str == '0') {   /* following zeros */
-        foundZero ++;
+        foundZero = 1;
         str++;
     }
 
@@ -562,7 +562,7 @@ void CssCollapseNodes(Node* curr) {
                         /* ... if that's not the start of the buffer ... */
                         if (zero != curr->contents) {
                             /* set the buffer to "0 + units", blowing away the earlier bits */
-                            int len = curr->length - (zero - curr->contents);
+                            size_t len = curr->length - (zero - curr->contents);
                             CssSetNodeContents(curr, zero, len);
                         }
                     }
