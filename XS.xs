@@ -14,21 +14,21 @@ const char* end_ie_hack   = "/**/";
  * CHARACTER CLASS METHODS
  * ****************************************************************************
  */
-int charIsSpace(char ch) {
+bool charIsSpace(char ch) {
     if (ch == ' ')  return 1;
     if (ch == '\t') return 1;
     return 0;
 }
-int charIsEndspace(char ch) {
+bool charIsEndspace(char ch) {
     if (ch == '\n') return 1;
     if (ch == '\r') return 1;
     if (ch == '\f') return 1;
     return 0;
 }
-int charIsWhitespace(char ch) {
+bool charIsWhitespace(char ch) {
     return charIsSpace(ch) || charIsEndspace(ch);
 }
-int charIsIdentifier(char ch) {
+bool charIsIdentifier(char ch) {
     if ((ch >= 'a') && (ch <= 'z')) return 1;
     if ((ch >= 'A') && (ch <= 'Z')) return 1;
     if ((ch >= '0') && (ch <= '9')) return 1;
@@ -39,7 +39,7 @@ int charIsIdentifier(char ch) {
     if (ch == '%')  return 1;
     return 0;
 }
-int charIsInfix(char ch) {
+bool charIsInfix(char ch) {
     /* WS before+after these characters can be removed */
     if (ch == '{')  return 1;
     if (ch == '}')  return 1;
@@ -49,13 +49,13 @@ int charIsInfix(char ch) {
     if (ch == '>')  return 1;
     return 0;
 }
-int charIsPrefix(char ch) {
+bool charIsPrefix(char ch) {
     /* WS after these characters can be removed */
     if (ch == '(')  return 1;   /* requires leading WS when used in @media */
     if (ch == ':')  return 1;   /* requires leading WS when used in pseudo-selector */
     return charIsInfix(ch);
 }
-int charIsPostfix(char ch) {
+bool charIsPostfix(char ch) {
     /* WS before these characters can be removed */
     if (ch == ')')  return 1;   /* requires trailing WS for MSIE */
     return charIsInfix(ch);
@@ -84,7 +84,7 @@ struct _Node {
     const char* contents;
     size_t      length;
     NodeType    type;
-    int         can_prune;
+    bool        can_prune;
 };
 
 #define NODE_SET_SIZE 50000
@@ -118,7 +118,7 @@ typedef struct {
  */
 
 /* checks to see if the node is the given string, case INSENSITIVELY */
-int nodeEquals(Node* node, const char* string) {
+bool nodeEquals(Node* node, const char* string) {
     /* not the same length? Not equal */
     size_t len = strlen(string);
     if (len != node->length)
@@ -128,7 +128,7 @@ int nodeEquals(Node* node, const char* string) {
 }
 
 /* checks to see if the node contains the given string, case INSENSITIVELY */
-int nodeContains(Node* node, const char* string) {
+bool nodeContains(Node* node, const char* string) {
     const char* haystack = node->contents;
     const char* endofhay = haystack + node->length;
     size_t len = strlen(string);
@@ -161,7 +161,7 @@ int nodeContains(Node* node, const char* string) {
 
 /* checks to see if the node begins with the given string, case INSENSITIVELY.
  */
-int nodeBeginsWith(Node* node, const char* string) {
+bool nodeBeginsWith(Node* node, const char* string) {
     /* If the string is longer than the node, it's not going to match */
     size_t len = strlen(string);
     if (len > node->length)
@@ -171,7 +171,7 @@ int nodeBeginsWith(Node* node, const char* string) {
 }
 
 /* checks to see if the node ends with the given string, case INSENSITVELY. */
-int nodeEndsWith(Node* node, const char* string) {
+bool nodeEndsWith(Node* node, const char* string) {
     /* If the string is longer than the node, it's not going to match */
     size_t len = strlen(string);
     if (len > node->length)
@@ -196,7 +196,7 @@ int nodeEndsWith(Node* node, const char* string) {
 
 /* checks if this node is the start of "!important" (with optional intravening
  * whitespace. */
-int nodeStartsBANGIMPORTANT(Node* node) {
+bool nodeStartsBANGIMPORTANT(Node* node) {
     if (!node) return 0;
 
     /* Doesn't start with a "!", nope */
@@ -431,7 +431,7 @@ Node* CssTokenizeString(CssDoc* doc, const char* string) {
  * found, return NULL.
  */
 const char* CssSkipZeroValue(const char* str) {
-    int foundZero = 0;
+    bool foundZero = 0;
 
     /* Find and skip over any leading zero value */
     while (*str == '0') {   /* leading zeros */
@@ -454,7 +454,7 @@ const char* CssSkipZeroValue(const char* str) {
 }
 
 /* checks to see if the string contains a known CSS unit */
-int CssIsKnownUnit(const char* str) {
+bool CssIsKnownUnit(const char* str) {
     /* If it ends with a known Unit, its a Zero Unit */
     if (0 == strncmp(str, "em",   2)) { return 1; }
     if (0 == strncmp(str, "ex",   2)) { return 1; }
@@ -477,7 +477,7 @@ int CssIsKnownUnit(const char* str) {
 }
 
 /* checks to see if the string represents a "zero unit" */
-int CssIsZeroUnit(const char* str) {
+bool CssIsZeroUnit(const char* str) {
     /* Does it start with a zero value? */
     const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
@@ -489,7 +489,7 @@ int CssIsZeroUnit(const char* str) {
 }
 
 /* checks to see if the string represents a "zero percentage" */
-int CssIsZeroPercent(const char* str) {
+bool CssIsZeroPercent(const char* str) {
     /* Does it start with a zero value? */
     const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
@@ -502,7 +502,7 @@ int CssIsZeroPercent(const char* str) {
 }
 
 /* checks to see if the string contains "just zeros" (with no units or percentages) */
-int CssIsJustZeros(const char* str) {
+bool CssIsJustZeros(const char* str) {
     /* Does it start with a zero value? */
     const char* ptr = CssSkipZeroValue(str);
     if (ptr == NULL) {
@@ -516,8 +516,8 @@ int CssIsJustZeros(const char* str) {
 
 /* collapses all of the nodes to their shortest possible representation */
 void CssCollapseNodes(Node* curr) {
-    int inMacIeCommentHack = 0;
-    int inFunction = 0;
+    bool inMacIeCommentHack = 0;
+    bool inFunction = 0;
     while (curr) {
         Node* next = curr->next;
         switch (curr->type) {
