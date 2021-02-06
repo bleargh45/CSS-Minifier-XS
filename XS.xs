@@ -28,6 +28,10 @@ bool charIsEndspace(char ch) {
 bool charIsWhitespace(char ch) {
     return charIsSpace(ch) || charIsEndspace(ch);
 }
+bool charIsNumeric(char ch) {
+    if ((ch >= '0') && (ch <= '9')) return 1;
+    return 0;
+}
 bool charIsIdentifier(char ch) {
     if ((ch >= 'a') && (ch <= 'z')) return 1;
     if ((ch >= 'A') && (ch <= 'Z')) return 1;
@@ -421,30 +425,27 @@ Node* CssTokenizeString(CssDoc* doc, const char* string) {
  */
 
 /* Skips over any "zero value" found in the provided string, returning a
- * pointer to the next character _after_ the zero value.  If no zero value is
- * found, return NULL.
+ * pointer to the next character after those zeros (which may be the same
+ * as the pointer to ther original string, if no zeros were found).
  */
 const char* CssSkipZeroValue(const char* str) {
-    bool foundZero = 0;
+    /* Skip leading zeros */
+    while (*str == '0') { str ++; }
+    const char* after_leading_zeros = str;
 
-    /* Find and skip over any leading zero value */
-    while (*str == '0') {   /* leading zeros */
-        foundZero = 1;
-        str++;
-    }
-    if (*str == '.') {      /* decimal point */
-        str++;
-    }
-    while (*str == '0') {   /* following zeros */
-        foundZero = 1;
-        str++;
-    }
-
-    /* If we found a Zero, return the pointer to the next char *after* it */
-    if (foundZero) {
+    /* Decimal point, followed by more zeros? */
+    if (*str == '.') {
+        str ++;
+        while (*str == '0') { str ++; }
+        if (charIsNumeric(*str)) {
+            /* ends in digit; significant at the decimal point */
+            return after_leading_zeros;
+        }
         return str;
     }
-    return NULL;
+
+    /* Done. */
+    return after_leading_zeros;
 }
 
 /* checks to see if the string contains a known CSS unit */
@@ -467,44 +468,6 @@ bool CssIsKnownUnit(const char* str) {
     if (0 == strncmp(str, "%",    1)) { return 1; }
 
     /* Nope */
-    return 0;
-}
-
-/* checks to see if the string represents a "zero unit" */
-bool CssIsZeroUnit(const char* str) {
-    /* Does it start with a zero value? */
-    const char* ptr = CssSkipZeroValue(str);
-    if (ptr == NULL) {
-        return 0;
-    }
-
-    /* And how about a known unit? */
-    return CssIsKnownUnit(ptr);
-}
-
-/* checks to see if the string represents a "zero percentage" */
-bool CssIsZeroPercent(const char* str) {
-    /* Does it start with a zero value? */
-    const char* ptr = CssSkipZeroValue(str);
-    if (ptr == NULL) {
-        return 0;
-    }
-
-    /* And does it end with a "%"? */
-    if (0 == strncmp(ptr, "%", 1)) { return 1; }
-    return 0;
-}
-
-/* checks to see if the string contains "just zeros" (with no units or percentages) */
-bool CssIsJustZeros(const char* str) {
-    /* Does it start with a zero value? */
-    const char* ptr = CssSkipZeroValue(str);
-    if (ptr == NULL) {
-        return 0;
-    }
-
-    /* And are we now at the end of the string? */
-    if (*ptr == '\0') { return 1; }
     return 0;
 }
 
@@ -533,45 +496,62 @@ void CssCollapseNodes(Node* curr) {
                 }
                 break;
             case NODE_IDENTIFIER:
-                if (CssIsZeroUnit(curr->contents)) {
-                    /* Zeros can be minified, but have varying rules as to how */
-                    if (CssIsJustZeros(curr->contents)) {
-                        /* nothing but zeros, so truncate to "0" */
-                        const char* last_ch = curr->contents + curr->length - 1;
-                        CssSetNodeContents(curr, last_ch, 1);
-                    }
-                    else if (CssIsZeroPercent(curr->contents)) {
-                        /* a zero percentage; truncate to "0%" */
-                        const char* last_ch = curr->contents + curr->length - 2;
-                        CssSetNodeContents(curr, last_ch, 2);
-                    }
-                    else if (inFunction) {
-                        /* inside a function, units need to be preserved */
-                        /* but we can reduce it to "0" units */
+            {
+                /* if the node doesn't begin with a "zero", nothing to collapse */
+                const char* ptr = curr->contents;
+                if ( (*ptr != '0') && (*ptr != '.' )) {
+                    /* not "0" and not "point-something" */
+                    break;
+                }
+                if ( (*ptr == '.') && (*(ptr+1) != '0') ) {
+                    /* "point-something", but not "point-zero" */
+                    break;
+                }
 
-                        /* ... find the first non-zero character in the buffer */
-                        const char* zero = CssSkipZeroValue(curr->contents);
-                        /* ... back up one char; now pointing at "the last zero" */
-                        zero --;
-                        /* ... if that's not the start of the buffer ... */
-                        if (zero != curr->contents) {
-                            /* set the buffer to "0 + units", blowing away the earlier bits */
-                            size_t len = curr->length - (zero - curr->contents);
-                            CssSetNodeContents(curr, zero, len);
-                        }
-                    }
-                    else {
-                        /* not in a function, truncate to "0" and drop the units */
+                /* skip all leading zeros */
+                ptr = CssSkipZeroValue(curr->contents);
 
-                        /* ... find first non-zero character in the buffer */
-                        const char* zero = CssSkipZeroValue(curr->contents);
-                        /* ... back up one char; now pointing at "the last zero" */
-                        zero --;
-                        /* ... point to that zero, and truncate the units */
-                        CssSetNodeContents(curr, zero, 1);
-                    }
+                /* if we didn't skip anything, no Zeros to collapse */
+                if (ptr == curr->contents) {
+                    break;
+                }
+
+                /* did we skip the entire thing, and thus the Node is "all zeros"? */
+                size_t skipped = ptr - curr->contents;
+                if (skipped == curr->length) {
+                    /* nothing but zeros, so truncate to "0" */
+                    CssSetNodeContents(curr, "0", 1);
+                    break;
+                }
+
+                /* was it a zero percentage? */
+                if (*ptr == '%') {
+                    /* a zero percentage; truncate to "0%" */
+                    CssSetNodeContents(curr, "0%", 2);
+                    break;
+                }
+
+                /* if all we're left with is a known CSS unit, and we're NOT in
+                 * a function (where we have to preserve units), just truncate
+                 * to "0"
+                 */
+                if (!inFunction && CssIsKnownUnit(ptr)) {
+                    /* not in a function, and is a zero unit; truncate to "0" */
+                    CssSetNodeContents(curr, "0", 1);
+                    break;
+                }
+
+                /* otherwise, just skip leading zeros, and preserve any unit */
+                /* ... do we need to back up one char to find a significant zero? */
+                if (*ptr != '.') { ptr --; }
+                /* ... if that's not the start of the buffer ... */
+                if (ptr != curr->contents) {
+                    /* set the buffer to "0 + units", blowing away the earlier bits */
+                    size_t len = curr->length - (ptr - curr->contents);
+                    CssSetNodeContents(curr, ptr, len);
                 }
                 break;
+            }
             case NODE_SIGIL:
                 if (nodeIsCHAR(curr,'(')) { inFunction = 1; }
                 if (nodeIsCHAR(curr,')')) { inFunction = 0; }

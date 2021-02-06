@@ -5,6 +5,7 @@ Revision history for Perl extension CSS::Minifier::XS.
       document, and simply use pointers back into original string.
       - Dramatically improves performance; local testing shows boost from
         ~25/s to ~85MB/s
+    - Improve zero value minification further
 
 0.12      2021-01-30 21:46:07-08:00 America/Vancouver
     - rewrote test suite into a single ".t" test
