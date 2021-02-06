@@ -275,30 +275,6 @@ void CssAppendNode(Node* element, Node* node) {
     element->next = node;
 }
 
-/* collapses a node to a single whitespace character.  If the node contains any
- * endspace characters, that is what we're collapsed to.
- */
-void CssCollapseNodeToWhitespace(Node* node) {
-    /* if we're already a single character, nothing to do; can't get any smaller */
-    if (node->length == 1) {
-        return;
-    }
-
-    /* if we've got a buffer with contents, reduce it */
-    if (node->contents) {
-        /* start by pointing to first whitespace char, and just that one char */
-        CssSetNodeContents(node, node->contents, 1);
-        /* if we can find an "endspace" char, point to that instead */
-        size_t idx;
-        for (idx=0; idx<node->length; idx++) {
-            if (charIsEndspace(node->contents[idx])) {
-                CssSetNodeContents(node, node->contents+idx, 1);
-                break;
-            }
-        }
-    }
-}
-
 /* ****************************************************************************
  * TOKENIZING FUNCTIONS
  * ****************************************************************************
@@ -479,7 +455,8 @@ void CssCollapseNodes(Node* curr) {
         Node* next = curr->next;
         switch (curr->type) {
             case NODE_WHITESPACE:
-                CssCollapseNodeToWhitespace(curr);
+                /* collapse to a single whitespace character */
+                curr->length = 1;
                 break;
             case NODE_BLOCKCOMMENT:
                 if (!inMacIeCommentHack && nodeIsMACIECOMMENTHACK(curr)) {

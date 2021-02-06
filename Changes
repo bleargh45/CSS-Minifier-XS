@@ -6,6 +6,7 @@ Revision history for Perl extension CSS::Minifier::XS.
       - Dramatically improves performance; local testing shows boost from
         ~25/s to ~85MB/s
     - Improve zero value minification further
+    - Simplified whitespace compaction
 
 0.12      2021-01-30 21:46:07-08:00 America/Vancouver
     - rewrote test suite into a single ".t" test
