@@ -6,7 +6,7 @@ Revision history for Perl extension CSS::Minifier::XS.
     - Internals; avoid allocating memory for each node as we tokenize the
       document, and simply use pointers back into original string.
       - Dramatically improves performance; local testing shows boost from
-        ~25/s to ~85MB/s
+        ~25MB/s to ~85MB/s
     - Improve zero value minification further
     - Simplified whitespace compaction
 
