@@ -6,5 +6,6 @@ author_requires 'File::Which';
 author_requires 'IPC::Run';
 author_requires 'CSS::Compressor';
 author_requires 'CSS::Minifier';
+author_requires 'Linux::Smaps';
 author_requires 'Number::Format';
 author_requires 'Test::LeakTrace';
