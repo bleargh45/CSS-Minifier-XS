@@ -1,6 +1,8 @@
 Revision history for Perl extension CSS::Minifier::XS.
 
 {{$NEXT}}
+
+0.14      2026-06-28 16:30:59-07:00 America/Vancouver
     - Fixes a memory leak in minify(), when the entire document is minified
       away.
 
