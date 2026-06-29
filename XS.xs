@@ -528,6 +528,19 @@ void CssCollapseNodes(Node* curr) {
                 if (!nodeIsNumber(curr))
                     break;
 
+                /* numerics can be part of a NAME or PATH segment, instead of
+                 * being an actual numeric value (e.g. ".grid-001",
+                 * "--spacing-001", "url(cache/00/foo.png)").  Those need to be
+                 * preserved.
+                 */
+                if (curr->prev
+                    && (nodeIsCHAR(curr->prev, '-') || nodeIsCHAR(curr->prev, '/'))
+                    && curr->prev->prev
+                    && nodeIsIDENTIFIER(curr->prev->prev))
+                {
+                    break;
+                }
+
                 /* skip all leading zeros */
                 ptr = CssSkipZeroValue(curr->contents);
 
